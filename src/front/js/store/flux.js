@@ -21,6 +21,55 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().changeColor(0, "green");
 			},
 
+			registerUser: async (email, password) => {
+				console.log(email, password)
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/signup`, {
+						method: "POST",
+						headers: {
+							"Content-type": "application/json"
+						},
+						body: JSON.stringify({email:email, password:password})
+					})
+
+					const data = await response.json()
+					console.log(data)
+
+					if (response.ok) {
+						return true
+					}
+					else {
+						return false
+					}
+
+				} catch (error) {
+					console.log(error)
+				}
+			},
+
+			getUser: async () => {
+				let store = getStore()
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/user`, {
+						headers:{
+							"Authorization":`Bearer ${store.token}`
+						}
+					})
+					if(response.ok){
+						let result = await response.json()
+						setStore({
+							users:result
+						})
+					}
+					if(response.status == 401 || response.status == 422){
+						getActions().logout()
+					}
+					console.log(response.status)
+				} catch (error) {
+					conasole.log(error)
+				}
+			},
+
 			getMessage: async () => {
 				try{
 					// fetching data from the backend
@@ -46,7 +95,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				//reset the global store
 				setStore({ demo: demo });
-			}
+			},
+
+
 		}
 	};
 };
