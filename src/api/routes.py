@@ -38,15 +38,15 @@ def handle_hello():
 @api.route('/signup', methods=['POST'])
 def handle_signup():
     body = request.json
+    email = body.get('email')
     password = body.get('password')
     # Verificar si el correo electronico ya existe
-    exist_user = User.query.filter_by(email = body['email']).first()
+    exist_user = User.query.filter_by(email = email).first()
     if exist_user:
         return jsonify({'error': 'este correo ya existe'}), 400
     salt = b64encode(os.urandom(32)).decode("utf-8")
     new_user = User(
-        email = body['email'],
-        username = body['username'],
+        email = email,
         password = set_password(password, salt),
         salt = salt
     )
@@ -80,7 +80,7 @@ def handle_signup():
 #         return jsonify({"error": str(error)}), 500
     
 
-@api.route("/login", methods=["GET"])
+@api.route("/login", methods=["POST"])
 def login():
 
     body = request.json 

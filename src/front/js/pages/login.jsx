@@ -8,13 +8,13 @@ export const Login = () => {
 	const [password, setPassword] = useState("")
 	
 	const navigate = useNavigate()
-	function signup(e) {
+	function login(e) {
 	  e.preventDefault()
-	  actions.signup(email, password)
+	  actions.login(email, password)
 	}
 	return (
 	  <div className="container">
-		<form onSubmit={(e) => signup(e)}>
+		<form onSubmit={(e) => login(e)}>
 		  <div className="mb-3">
 			<label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
 			<input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} id="exampleInputEmail1" aria-describedby="emailHelp" />

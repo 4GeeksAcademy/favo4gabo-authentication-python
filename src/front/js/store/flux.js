@@ -2,18 +2,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			
+			currentUser:null,
+			token: null
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -47,7 +38,43 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			getUser: async () => {
+			login: async(email, password) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/login`, {
+                        method: "POST",
+						headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        }),                        
+                    })
+                    const data = await response.json()
+                    if (response.ok) {
+                        localStorage.setItem("token", data.token)
+						setStore({token:data.token})
+                        console.log(data)
+                        setStore({currentUser:data.user})
+                    } else {
+                        console.log(data)
+                        setStore({currentUser:false})
+                    }
+                } catch (error) {
+                    console.log(error)
+                    setStore({currentUser:false})
+                }
+            },
+
+			logOut: async() => {
+				try {
+					localStorage.removeItem("token")
+					setStore({token:null})
+					console.log("logout exitoso")
+				} catch (error) {
+					console.log(error)
+				}
+			},
+
+			privateUser: async () => {
 				let store = getStore()
 				try {
 					let response = await fetch(`${process.env.BACKEND_URL}/user`, {
@@ -81,20 +108,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}catch(error){
 					console.log("Error loading message from backend", error)
 				}
-			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
 			},
 
 
