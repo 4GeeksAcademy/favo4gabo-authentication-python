@@ -54,48 +54,18 @@ def handle_signup():
     db.session.commit()
     return jsonify({'msg': 'User created succesfully'}), 200
 
-# @api.route("/signup", methods=["POST"])
-# def add_user():
-#     try:
-#         body = request.json
-#         print(body)
-#         email = body.get("email")
-#         password = body.get("password")
-#         if email is None or password is None:
-#             return jsonify({"msg": "Necesitas proporcionar un email y una contraseña"}), 400
-#         user = User.query.filter_by(email=email).first()
-#         if user:
-#             return jsonify({"msg": "El usuario ya existe"}), 400
-#         # Genera un salt aleatorio y codifícalo en base64
-#         salt = b64encode(os.urandom(32)).decode("utf-8")
-#         # Hashea la contraseña junto con el salt
-#         hashed_password = bcrypt.generate_password_hash(password + salt).decode('utf-8')
-#         # Crea una instancia de User con el email, la contraseña hasheada y el salt
-#         new_user = User(email=email, password=hashed_password, salt=salt)
-#         # Agrega el nuevo usuario a la base de datos
-#         db.session.add(new_user)
-#         db.session.commit()
-#         return jsonify({"msg": "Usuario creado exitosamente"}), 200
-#     except Exception as error:
-#         return jsonify({"error": str(error)}), 500
-    
 
 @api.route("/login", methods=["POST"])
 def login():
-
     body = request.json 
     email = body.get("email")
     password = body.get("password")
-
     if email is None or password is None:
          return jsonify({"msg": "se necesita email y contrasena"}), 400
-    
     else: 
-        user = User.query.filter_by(email=email).one_or_none()
-        
+        user = User.query.filter_by(email=email).one_or_none()  
         if user is None: 
-            return jsonify({"msg": "credenciales invalidas"}), 400
-        
+            return jsonify({"msg": "credenciales invalidas"}), 400       
         else:
             if check_password(user.password, password, user.salt):
                 token = create_access_token(identity = {
@@ -105,10 +75,10 @@ def login():
             else: 
                 return jsonify({"msg": "credenciales invalidas"}), 400
             
+
 @api.route("/user", methods=["GET"])
 @jwt_required()
 def get_all_users():
-    
     users = User.query.all()
     return jsonify(list(map(lambda item: item.serialize(), users)))
 

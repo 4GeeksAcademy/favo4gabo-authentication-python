@@ -14,6 +14,7 @@ export const Signup = () => {
 	}
 	return (
 	  <div className="container">
+		<h3>Registrarse</h3>
 		<form onSubmit={(e) => signup(e)}>
 		  <div className="mb-3">
 			<label htmlFor="exampleInputEmail1" className="form-label">Email address</label>

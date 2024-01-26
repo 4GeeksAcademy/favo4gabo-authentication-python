@@ -11,9 +11,11 @@ export const Login = () => {
 	function login(e) {
 	  e.preventDefault()
 	  actions.login(email, password)
+	  navigate("/private")
 	}
 	return (
 	  <div className="container">
+		<h3>Iniciar sesion</h3>
 		<form onSubmit={(e) => login(e)}>
 		  <div className="mb-3">
 			<label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
